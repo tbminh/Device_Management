@@ -54,14 +54,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Device_Managament2804.exe" size="1006048">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Device_Managament2804.exe" size="1006560">
       <assemblyIdentity name="Device_Managament2804" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>gB1sdqc9d3Lyrz+wXkWTpmqfds2mk5zZmLXigXovKlo=</dsig:DigestValue>
+        <dsig:DigestValue>r8P/BqbEEjm94gFbuoCucgMpRkRas5NXUiG2BqpEm9U=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

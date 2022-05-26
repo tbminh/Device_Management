@@ -531,7 +531,10 @@ namespace Device_Managament2804
                 if (txt_hdh.Text != "" || txt_ip.Text != "" || txt_key.Text != "" || txt_office.Text != "")
                 {
                     OleDbConnection conn2 = new OleDbConnection(cls_KetNoi.ConnectionString_DE);
-                    string sql2 = @"INSERT INTO details_orders(order_serial_key,
+                    string sql2 = @"    DECLARE @ORDER_SERIAL_KEY VARCHAR(10) = '00000'
+                                        SELECT @NEW_NUMBER = RIGHT(MAX(Order_Serial_Key),5) + 1 FROM Orders
+                                        SELECT @NEW_NUMBER = 'OD' + LEFT(@ORDER_SERIAL_KEY, 5 - LEN(@NEW_NUMBER))+CONVERT(VARCHAR,@NEW_NUMBER)
+                                        INSERT INTO details_orders(order_serial_key,
                                                     suggest_id,
                                                     operating_sys,
                                                     ip_device,
@@ -1332,6 +1335,9 @@ namespace Device_Managament2804
 
         }
 
-        
+        private void lbl_im_qty_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -714,6 +714,7 @@
             this.lbl_im_qty.Size = new System.Drawing.Size(21, 24);
             this.lbl_im_qty.TabIndex = 57;
             this.lbl_im_qty.Text = "0";
+            this.lbl_im_qty.Click += new System.EventHandler(this.lbl_im_qty_Click);
             // 
             // label_im_qty
             // 
