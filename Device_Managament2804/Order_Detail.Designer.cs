@@ -341,7 +341,7 @@
             this.btn_update.BackColor = System.Drawing.Color.DarkSlateGray;
             this.btn_update.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_update.ForeColor = System.Drawing.Color.White;
-            this.btn_update.Location = new System.Drawing.Point(148, 196);
+            this.btn_update.Location = new System.Drawing.Point(150, 196);
             this.btn_update.Name = "btn_update";
             this.btn_update.Size = new System.Drawing.Size(102, 27);
             this.btn_update.TabIndex = 22;

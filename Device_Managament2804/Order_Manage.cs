@@ -286,7 +286,7 @@ namespace Device_Managament2804
         private void select_Click(object sender, EventArgs e)
         {
             OleDbConnection conn = new OleDbConnection(cls_KetNoi.ConnectionString_DE);
-            string sql = @" SELECT row_number() OVER (ORDER BY Order_Serial_Key)stt,
+            string sql = @" SELECT row_number() OVER (ORDER BY Order_Serial_Key)stt ,
 			                        O.Order_Serial_Key,
 		                            O.Device_serial_key,
 		                            DV.Name_device,
@@ -407,10 +407,6 @@ namespace Device_Managament2804
                 txt_ip.Enabled = true;
                 txt_key.Enabled = true;
                 txt_office.Enabled = true;
-                txt_hdh.Text = "";
-                txt_ip.Text = "";
-                txt_key.Text = "";
-                txt_office.Text = "";
             }
         }
         private void add_Click(object sender, EventArgs e)
@@ -517,7 +513,7 @@ namespace Device_Managament2804
                                                         Action,
                                                         time_update)
                                 VALUES (@NEW_NUMBER, @DEVICE_SERIAL_KEY ,'" + txt_suggest_id.Text + "',N'" + depart_name + "',N'" + txt_name_reciever.Text + "','" + dpt_expect_date.Value + "','" + dptOrders_imex.Value + "','" + Int32.Parse(qty) + "', '" + status + "',getdate(),'" + ip + "','" + mac + "','" + hname + "',@USER_SERIAL_KEY, N'" + note.ToString() + "','Add',getdate())";
-
+                                
                     OleDbConnection connect = new OleDbConnection(cls_KetNoi.ConnectionString_DE);
                     connect.Open();
                     OleDbCommand cmd1 = new OleDbCommand(sql, connect);
@@ -526,14 +522,10 @@ namespace Device_Managament2804
                     MessageBox.Show("Thêm thành công!!");
                     reset_Click(sender, e);
                     select_Click(sender, e);
-                }
-                
-                if (txt_hdh.Text != "" || txt_ip.Text != "" || txt_key.Text != "" || txt_office.Text != "")
-                {
-                    OleDbConnection conn2 = new OleDbConnection(cls_KetNoi.ConnectionString_DE);
-                    string sql2 = @"    DECLARE @ORDER_SERIAL_KEY VARCHAR(10) = '00000'
-                                        SELECT @NEW_NUMBER = RIGHT(MAX(Order_Serial_Key),5) + 1 FROM Orders
-                                        SELECT @NEW_NUMBER = 'OD' + LEFT(@ORDER_SERIAL_KEY, 5 - LEN(@NEW_NUMBER))+CONVERT(VARCHAR,@NEW_NUMBER)
+                    if (txt_ip.Text != "")
+                    {
+                        OleDbConnection conn2 = new OleDbConnection(cls_KetNoi.ConnectionString_DE);
+                        string sql2 = @"DECLARE @NEW_NUMBER VARCHAR(10) = (SELECT MAX(Order_Serial_Key) FROM Orders)
                                         INSERT INTO details_orders(order_serial_key,
                                                     suggest_id,
                                                     operating_sys,
@@ -541,10 +533,14 @@ namespace Device_Managament2804
                                                     product_key,
                                                     type_office) 
                             VALUES(@NEW_NUMBER, '" + txt_suggest_id.Text + "', '" + txt_hdh.Text + "', '" + txt_ip.Text + "', '" + txt_key.Text + "', '" + txt_office.Text + @"')";
-                    conn2.Open();
-                    OleDbCommand cmd2 = new OleDbCommand(sql2, conn2);
-                    cmd2.ExecuteNonQuery();
+                        conn2.Open();
+                        OleDbCommand cmd2 = new OleDbCommand(sql2, conn2);
+                        cmd2.ExecuteNonQuery();
+                        MessageBox.Show("Thêm chi tiết thành công!");
+                    }
                 }
+                
+                
             }
         }
 
@@ -722,52 +718,48 @@ namespace Device_Managament2804
                 string order = txt_suggest_id.Text;
                 string status = status_order.Text;
 
-                //int a = 0, b = 0;
-                //int c = new int();
-                //string qty1 = "";
-                //string qty2 = "";
-                //string order_qty = @"SELECT Order_Quantity 
-                //                    FROM Orders 
-                //                    WHERE Order_serial_key = '" + order_serial_key + "'";
+                int a = 0, b = 0;
+                int c = new int();
+                string qty1 = "";
+                string qty2 = "";
+                string order_qty = @"SELECT Order_Quantity 
+                                    FROM Orders 
+                                    WHERE Order_serial_key = '" + order_serial_key + "'";
 
-                //string device_qty = @" SELECT Quantity 
-                //                    FROM Device 
-                //                    WHERE Name_device = N'" + device + "'";
-                //conn.Open();
-                //OleDbCommand cmd2 = new OleDbCommand(order_qty, conn);
-                //OleDbDataReader reader = cmd2.ExecuteReader();
+                string device_qty = @" SELECT Quantity 
+                                    FROM Device 
+                                    WHERE Name_device = N'" + device + "'";
+                conn.Open();
+                OleDbCommand cmd2 = new OleDbCommand(order_qty, conn);
+                OleDbDataReader reader = cmd2.ExecuteReader();
 
-                //OleDbCommand cmd3 = new OleDbCommand(device_qty, conn);
-                //OleDbDataReader reader2 = cmd3.ExecuteReader();
-                //while (reader.Read() && reader2.Read())
-                //{
-                //    qty1 = reader["Order_Quantity"].ToString();
-                //    qty2 = reader2["Quantity"].ToString();
-                //}
-                //conn.Dispose();
+                OleDbCommand cmd3 = new OleDbCommand(device_qty, conn);
+                OleDbDataReader reader2 = cmd3.ExecuteReader();
+                while (reader.Read() && reader2.Read())
+                {
+                    qty1 = reader["Order_Quantity"].ToString();
+                    qty2 = reader2["Quantity"].ToString();
+                }
+                conn.Dispose();
 
-                //bool result = Int32.TryParse(qty1, out a);
-                //bool result2 = Int32.TryParse(qty2, out b);
-                
-                //if(status_order.Text == "Xuat")
-                //{
-                //    delete.Enabled = false;
-                //    if (result & result2)
-                //    {
-                //        c = b + a;
-                //    }
-                //}
-                //else
-                //{
-                //    if(a>b)
-                //    {
-                //        c = 0;
-                //    }
-                //    else if(result & result2)
-                //    {
-                //        c = b - a;
-                //    }
-                //}
+                bool result = Int32.TryParse(qty1, out a);
+                bool result2 = Int32.TryParse(qty2, out b);
+
+                if (status_order.Text == "Out")
+                {
+                    delete.Enabled = false;
+                    if (result & result2)
+                    {
+                        c = b + a;
+                    }
+                }
+                else
+                {
+                    if (result & result2)
+                    {
+                        c = b - a;
+                    }
+                }
                 OleDbConnection connect = new OleDbConnection(cls_KetNoi.ConnectionString_DE);
 
                 string sql2 = @"  DECLARE @USER_SERIAL_KEY VARCHAR(10),@DEVICE_SERIAL_KEY VARCHAR(10), @STATUS NVARCHAR(50)
@@ -777,8 +769,11 @@ namespace Device_Managament2804
                                   INSERT INTO History_orders(Order_Serial_Key,Device_serial_key,Suggest_id,Department_ID,Reciever,Order_expect_date,Order_Date,Order_Quantity,Order_Status,Order_Modify_Date,IP_address,MAC_address,Host_name,User_Serial_Key,Order_Note,Action)
                                   VALUES ('" + order_serial_key + "' , @DEVICE_SERIAL_KEY , '" + order.ToString() + "',N'" + depart.ToString() + "',N'"+txt_name_reciever.Text+"','" + dpt_expect_date.Value + "','" + dptOrders_imex.Value + "','" + Int32.Parse(qty) + "', '" + status + "',getdate(),'" + ip + "','" + mac + "','" + hname + "',@USER_SERIAL_KEY, N'" + note.ToString() + @"','Delete')
                                   
+                                  UPDATE Device SET Quantity = '"+ c + "' WHERE Device_serial_key = '"+ txt_device_serial_key .Text+ @"'
                                   DELETE FROM Orders 
-                                  WHERE Order_Serial_Key = '" + order_serial_key + @"'";
+                                  WHERE Order_Serial_Key = '" + order_serial_key + @"'
+
+                                  DELETE FROM details_orders WHERE order_serial_key = '" + order_serial_key + @"'";
 
                 connect.Open();
                 OleDbCommand cmd = new OleDbCommand(sql2, connect);
@@ -1027,19 +1022,12 @@ namespace Device_Managament2804
 
         private void Order_Manage_Load_1(object sender, EventArgs e)
         {
-            txt_hdh.Text = "undefine";
-            txt_ip.Text = "undefine";
-            txt_key.Text = "undefine";
-            txt_office.Text = "undefine";
             Test();
             edit.Enabled = false;
             delete.Enabled = false;
             txtSearch.Text = "Nhập thông tin tìm kiếm...";
             status_order.SelectedItem = status_order.Items[0];
-            //if(status_order.Items[0].ToString() == "Out")
-            //{
-            //    txt_office.Enabled = false;
-            //}
+            txt_ip.Text = "";
             OleDbConnection conn = new OleDbConnection(cls_KetNoi.ConnectionString_DE);
             conn.Open();
             string sql_select_department_id = @"select Department_ID from Data_Department";

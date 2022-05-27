@@ -505,5 +505,6 @@ namespace Device_Managament2804
             Order_Manage frm = new Order_Manage();
             frm.Show();
         }
+
     }
 }
